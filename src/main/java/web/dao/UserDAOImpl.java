@@ -33,4 +33,14 @@ public class UserDAOImpl implements UserDaoIntr {
         user.setId(++PEOPLE_COUNT);
         people.add(user);
     }
+    public void update(int id, User updatedPerson) {
+        User personToBeUpdated = show(id);
+
+        personToBeUpdated.setName(updatedPerson.getName());
+        personToBeUpdated.setAge(updatedPerson.getAge());
+    }
+
+    public void delete(int id) {
+        people.removeIf(p -> p.getId() == id);
+    }
 }

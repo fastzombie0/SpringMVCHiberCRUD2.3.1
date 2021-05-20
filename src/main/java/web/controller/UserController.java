@@ -3,10 +3,7 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import web.dao.UserDAOImpl;
 import web.model.User;
 
@@ -38,9 +35,26 @@ public class UserController {
         return "people/new";
     }
 
-    @GetMapping()
+    @PostMapping()
     public String create(@ModelAttribute("person") User user) {
         userDAO.save(user);
+        return "redirect:/people";
+    }
+    @GetMapping("/{id}/edit")
+    public String edit(Model model, @PathVariable("id") int id) {
+        model.addAttribute("person", userDAO.show(id));
+        return "people/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("person") User user, @PathVariable("id") int id) {
+        userDAO.update(id, user);
+        return "redirect:/people";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") int id) {
+        userDAO.delete(id);
         return "redirect:/people";
     }
 }
