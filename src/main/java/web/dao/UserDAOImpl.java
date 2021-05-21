@@ -1,21 +1,28 @@
 package web.dao;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import web.model.User;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+
+@Repository
 public class UserDAOImpl implements UserDaoIntr {
+    @PersistenceContext
+    private EntityManager entityManager;
     private static int PEOPLE_COUNT;
     private List<User> people;
+
     {
         people = new ArrayList<>();
-        people.add(new User(++PEOPLE_COUNT,"Andrea", 18));
-        people.add(new User(++PEOPLE_COUNT,"Bob", 19));
-        people.add(new User(++PEOPLE_COUNT,"Dilan", 20));
-        people.add(new User(++PEOPLE_COUNT,"Max", 25));
+        people.add(new User(++PEOPLE_COUNT, "Andrea", 18));
+        people.add(new User(++PEOPLE_COUNT, "Bob", 19));
+        people.add(new User(++PEOPLE_COUNT, "Dilan", 20));
+        people.add(new User(++PEOPLE_COUNT, "Max", 25));
     }
 
     @Override
@@ -33,6 +40,7 @@ public class UserDAOImpl implements UserDaoIntr {
         user.setId(++PEOPLE_COUNT);
         people.add(user);
     }
+
     public void update(int id, User updatedPerson) {
         User personToBeUpdated = show(id);
 
