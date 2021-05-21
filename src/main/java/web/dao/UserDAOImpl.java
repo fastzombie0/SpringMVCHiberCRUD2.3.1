@@ -2,10 +2,12 @@ package web.dao;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import web.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,41 +16,34 @@ import java.util.List;
 public class UserDAOImpl implements UserDaoIntr {
     @PersistenceContext
     private EntityManager entityManager;
-    private static int PEOPLE_COUNT;
-    private List<User> people;
-
-    {
-        people = new ArrayList<>();
-        people.add(new User(++PEOPLE_COUNT, "Andrea", 18));
-        people.add(new User(++PEOPLE_COUNT, "Bob", 19));
-        people.add(new User(++PEOPLE_COUNT, "Dilan", 20));
-        people.add(new User(++PEOPLE_COUNT, "Max", 25));
-    }
 
     @Override
     public List<User> index() {
-        return people;
+        return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
     @Override
     public User show(int id) {
-        return people.stream().filter(user -> user.getId() == id).findAny().orElse(null);
+        TypedQuery<User> query = entityManager.createQuery("select u from User u where u.id = :id", User.class);
+        query.setParameter("id", id);
+        return  query.getSingleResult();
+        //return people.stream().filter(user -> user.getId() == id).findAny().orElse(null);
     }
 
     @Override
+    @Transactional
     public void save(User user) {
-        user.setId(++PEOPLE_COUNT);
-        people.add(user);
+        entityManager.persist(user);
     }
-
+    @Transactional
     public void update(int id, User updatedPerson) {
-        User personToBeUpdated = show(id);
-
-        personToBeUpdated.setName(updatedPerson.getName());
-        personToBeUpdated.setAge(updatedPerson.getAge());
+        entityManager.merge(updatedPerson);
     }
-
+    @Transactional
     public void delete(int id) {
-        people.removeIf(p -> p.getId() == id);
+        TypedQuery<User> query = entityManager.createQuery("select u from User u where u.id = :id", User.class);
+        query.setParameter("id", id);
+        User user = query.getSingleResult();
+        entityManager.remove(user);
     }
 }
