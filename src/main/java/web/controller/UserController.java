@@ -7,27 +7,28 @@ import org.springframework.web.bind.annotation.*;
 import web.dao.UserDAOImpl;
 import web.dao.UserDaoIntr;
 import web.model.User;
+import web.service.UserServiceInter;
 
 @Controller
 @RequestMapping("/people")
 public class UserController {
 
-    private final UserDaoIntr userDAO;
+    private final UserServiceInter userServiceInter;
 
     @Autowired
-    public UserController(UserDaoIntr userDAO) {
-        this.userDAO = userDAO;
+    public UserController(UserServiceInter userServiceInter) {
+        this.userServiceInter = userServiceInter;
     }
 
     @GetMapping()
     public String index(Model model) { //получение всех юзеров из дао и передача на представление
-        model.addAttribute("people", userDAO.index());
+        model.addAttribute("people", userServiceInter.index());
         return "/people/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) { //получение одного по id из дао
-        model.addAttribute("person", userDAO.show(id));
+        model.addAttribute("person", userServiceInter.show(id));
         return "/people/show";
     }
 
@@ -39,24 +40,25 @@ public class UserController {
 
     @PostMapping()
     public String create(@ModelAttribute("person") User user) {
-        userDAO.save(user);
+        userServiceInter.save(user);
         return "redirect:/people";
     }
+
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", userDAO.show(id));
+        model.addAttribute("person", userServiceInter.show(id));
         return "people/edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("person") User user, @PathVariable("id") int id) {
-        userDAO.update(id, user);
+        userServiceInter.update(id, user);
         return "redirect:/people";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        userDAO.delete(id);
+        userServiceInter.delete(id);
         return "redirect:/people";
     }
 }
