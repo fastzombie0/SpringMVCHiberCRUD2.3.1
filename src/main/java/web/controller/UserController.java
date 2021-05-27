@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import web.dao.UserDAOImpl;
-import web.dao.UserDaoIntr;
 import web.model.User;
 import web.service.UserServiceInter;
 
@@ -21,15 +19,15 @@ public class UserController {
     }
 
     @GetMapping()
-    public String index(Model model) { //получение всех юзеров из дао и передача на представление
-        model.addAttribute("people", userServiceInter.index());
-        return "/people/index";
+    public String getAllUser(Model model) { //получение всех юзеров из дао и передача на представление
+        model.addAttribute("people", userServiceInter.getAllUser());
+        return "people/getAllUser";
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model) { //получение одного по id из дао
-        model.addAttribute("person", userServiceInter.show(id));
-        return "/people/show";
+    public String findById(@PathVariable("id") int id, Model model) { //получение одного по id из дао
+        model.addAttribute("person", userServiceInter.findById(id));
+        return "people/findById";
     }
 
     @GetMapping("/new")
@@ -46,7 +44,7 @@ public class UserController {
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", userServiceInter.show(id));
+        model.addAttribute("person", userServiceInter.findById(id));
         return "people/edit";
     }
 

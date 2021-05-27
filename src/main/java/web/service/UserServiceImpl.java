@@ -22,13 +22,13 @@ public class UserServiceImpl implements UserServiceInter {
     }
 
     @Override
-    public List<User> index() {
-        return userDAO.index();
+    public List<User> getAllUser() {
+        return userDAO.getAllUser();
     }
 
     @Override
-    public User show(int id) {
-        return userDAO.show(id);
+    public User findById(int id) {
+        return userDAO.findById(id);
     }
 
     @Override

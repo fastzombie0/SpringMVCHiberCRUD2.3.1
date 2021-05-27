@@ -18,12 +18,12 @@ public class UserDAOImpl implements UserDaoIntr {
     private EntityManager entityManager;
 
     @Override
-    public List<User> index() {
+    public List<User> getAllUser() {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
     @Override
-    public User show(int id) {
+    public User findById(int id) {
         TypedQuery<User> query = entityManager.createQuery("select u from User u where u.id = :id", User.class);
         query.setParameter("id", id);
         return  query.getSingleResult();
